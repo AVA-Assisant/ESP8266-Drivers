@@ -16,6 +16,8 @@ mqttc.loop_start()
 while True:
     q = input("Led: ")
     if q == "on":
-        mqttc.publish("led", json.dumps({"state": True}))
+        mqttc.publish("led", json.dumps({"state": 0}))
     elif q == "off":
-        mqttc.publish("led", json.dumps({"state": False}))
+        mqttc.publish("led", json.dumps({"state": 255}))
+    elif q.isnumeric():
+        mqttc.publish("led", json.dumps({"state": q}))

@@ -56,12 +56,9 @@ void callback(char *topic, byte *payload, unsigned int length)
   DynamicJsonDocument doc(512);
   deserializeJson(doc, strPayload); // deserialize JSON message to DynamicJsonDocument
 
-  bool state = doc["state"];
+  int state = doc["state"];
 
-  if (state)
-    digitalWrite(BUILTIN_LED, LOW);
-  else
-    digitalWrite(BUILTIN_LED, HIGH);
+  analogWrite(BUILTIN_LED, state);
 }
 
 void reconnect()
