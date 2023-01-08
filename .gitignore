@@ -53,3 +53,10 @@ ArduinoOutput/preproc/ctags_target_for_gcc_minus_e.cpp
 ArduinoOutput/sketch/Led_on:off.ino.cpp
 ArduinoOutput/sketch/Led_on:off.ino.cpp.d
 ArduinoOutput/sketch/Led_on:off.ino.cpp.o
+ArduinoOutput/Led_brightness.ino.map
+ArduinoOutput/Led_brightness.ino.bin
+ArduinoOutput/Led_brightness.ino.elf
+ArduinoOutput/core/Led_brightness.ino.globals.h
+ArduinoOutput/sketch/Led_brightness.ino.cpp
+ArduinoOutput/sketch/Led_brightness.ino.cpp.d
+ArduinoOutput/sketch/Led_brightness.ino.cpp.o
