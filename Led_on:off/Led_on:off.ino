@@ -58,7 +58,14 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   int state = doc["state"];
 
-  analogWrite(BUILTIN_LED, state);
+  if (state == 1)
+  {
+    digitalWrite(BUILTIN_LED, LOW);
+  }
+  else
+  {
+    digitalWrite(BUILTIN_LED, HIGH);
+  }
 }
 
 void reconnect()
