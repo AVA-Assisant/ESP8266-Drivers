@@ -7,7 +7,7 @@
 const char *ssid = "Karolina/Bartosz";
 const char *password = "2007/2011";
 const char *mqtt_server = "192.168.1.191";
-int id = 1;
+const char *id = "ESP-1";
 int mqtt_port = 2000;
 int state;
 
@@ -71,7 +71,7 @@ void reconnect()
         Serial.print("Attempting MQTT connection...");
 
         // Attempt to connect
-        if (client.connect("ESP" + id))
+        if (client.connect(id))
         {
             Serial.println("connected");
             client.subscribe("led");
@@ -116,8 +116,6 @@ void setup()
     setup_wifi();
 
     client.setServer(mqtt_server, mqtt_port);
-    client.connect("ESP_" + id);
-    client.subscribe("led");
     client.setCallback(callback);
     digitalWrite(BUILTIN_LED, HIGH);
 }
