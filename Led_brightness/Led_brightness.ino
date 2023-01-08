@@ -9,6 +9,7 @@ const char *password = "2007/2011";
 const char *mqtt_server = "192.168.1.191";
 int id = 1;
 int mqtt_port = 2000;
+int state;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -57,7 +58,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     DynamicJsonDocument doc(512);
     deserializeJson(doc, strPayload); // deserialize JSON message to DynamicJsonDocument
 
-    int state = doc["state"];
+    state = doc["state"];
 
     analogWrite(BUILTIN_LED, state);
 }
@@ -76,16 +77,18 @@ void reconnect()
             client.subscribe("led");
 
             digitalWrite(BUILTIN_LED, LOW);
-            delay(50);
+            delay(10);
             digitalWrite(BUILTIN_LED, HIGH);
-            delay(50);
+            delay(70);
             digitalWrite(BUILTIN_LED, LOW);
-            delay(50);
+            delay(10);
             digitalWrite(BUILTIN_LED, HIGH);
-            delay(50);
+            delay(70);
             digitalWrite(BUILTIN_LED, LOW);
-            delay(50);
+            delay(10);
             digitalWrite(BUILTIN_LED, HIGH);
+
+            analogWrite(BUILTIN_LED, state);
         }
         else
         {
@@ -113,7 +116,7 @@ void setup()
     setup_wifi();
 
     client.setServer(mqtt_server, mqtt_port);
-    client.connect("ESP" + id);
+    client.connect("ESP_" + id);
     client.subscribe("led");
     client.setCallback(callback);
     digitalWrite(BUILTIN_LED, HIGH);
