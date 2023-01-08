@@ -7,6 +7,7 @@
 const char *ssid = "Karolina/Bartosz";
 const char *password = "2007/2011";
 const char *mqtt_server = "192.168.1.191";
+int id = 1;
 int mqtt_port = 2000;
 
 WiFiClient espClient;
@@ -15,114 +16,114 @@ PubSubClient client(espClient);
 void setup_wifi()
 {
 
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+    delay(10);
+    // We start by connecting to a WiFi network
+    Serial.println();
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED)
-  {
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        digitalWrite(BUILTIN_LED, LOW);
+        delay(500);
+        Serial.print(".");
+        digitalWrite(BUILTIN_LED, HIGH);
+        delay(250);
+    }
+
+    randomSeed(micros());
+
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
     digitalWrite(BUILTIN_LED, LOW);
-    delay(500);
-    Serial.print(".");
-    digitalWrite(BUILTIN_LED, HIGH);
-    delay(250);
-  }
-
-  randomSeed(micros());
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-  digitalWrite(BUILTIN_LED, LOW);
 }
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
 
-  payload[length] = '\0';
-  String strPayload = String((char *)payload);
-  Serial.print(strPayload);
-  Serial.println();
+    payload[length] = '\0';
+    String strPayload = String((char *)payload);
+    Serial.print(strPayload);
+    Serial.println();
 
-  DynamicJsonDocument doc(512);
-  deserializeJson(doc, strPayload); // deserialize JSON message to DynamicJsonDocument
+    DynamicJsonDocument doc(512);
+    deserializeJson(doc, strPayload); // deserialize JSON message to DynamicJsonDocument
 
-  int state = doc["state"];
+    int state = doc["state"];
 
-  analogWrite(BUILTIN_LED, state);
+    analogWrite(BUILTIN_LED, state);
 }
 
 void reconnect()
 {
-  // Loop until we're reconnected
-  while (!client.connected())
-  {
-    Serial.print("Attempting MQTT connection...");
-
-    // Attempt to connect
-    if (client.connect("ESP"))
+    // Loop until we're reconnected
+    while (!client.connected())
     {
-      Serial.println("connected");
-      client.subscribe("led");
+        Serial.print("Attempting MQTT connection...");
 
-      digitalWrite(BUILTIN_LED, LOW);
-      delay(50);
-      digitalWrite(BUILTIN_LED, HIGH);
-      delay(50);
-      digitalWrite(BUILTIN_LED, LOW);
-      delay(50);
-      digitalWrite(BUILTIN_LED, HIGH);
-      delay(50);
-      digitalWrite(BUILTIN_LED, LOW);
-      delay(50);
-      digitalWrite(BUILTIN_LED, HIGH);
+        // Attempt to connect
+        if (client.connect("ESP" + id))
+        {
+            Serial.println("connected");
+            client.subscribe("led");
+
+            digitalWrite(BUILTIN_LED, LOW);
+            delay(50);
+            digitalWrite(BUILTIN_LED, HIGH);
+            delay(50);
+            digitalWrite(BUILTIN_LED, LOW);
+            delay(50);
+            digitalWrite(BUILTIN_LED, HIGH);
+            delay(50);
+            digitalWrite(BUILTIN_LED, LOW);
+            delay(50);
+            digitalWrite(BUILTIN_LED, HIGH);
+        }
+        else
+        {
+            Serial.print("failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" try again in 3 seconds");
+            // Wait 3 seconds before retrying
+            for (int i = 0; i < 6; i++)
+            {
+                digitalWrite(BUILTIN_LED, HIGH);
+                delay(450);
+                digitalWrite(BUILTIN_LED, LOW);
+                delay(50);
+            }
+        }
     }
-    else
-    {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 3 seconds");
-      // Wait 3 seconds before retrying
-      for (int i = 0; i < 6; i++)
-      {
-        digitalWrite(BUILTIN_LED, HIGH);
-        delay(450);
-        digitalWrite(BUILTIN_LED, LOW);
-        delay(50);
-      }
-    }
-  }
 }
 
 void setup()
 {
 
-  pinMode(BUILTIN_LED, OUTPUT);
-  Serial.begin(115200);
+    pinMode(BUILTIN_LED, OUTPUT);
+    Serial.begin(115200);
 
-  setup_wifi();
+    setup_wifi();
 
-  client.setServer(mqtt_server, mqtt_port);
-  client.connect("ESP");
-  client.subscribe("led");
-  client.setCallback(callback);
-  digitalWrite(BUILTIN_LED, HIGH);
+    client.setServer(mqtt_server, mqtt_port);
+    client.connect("ESP" + id);
+    client.subscribe("led");
+    client.setCallback(callback);
+    digitalWrite(BUILTIN_LED, HIGH);
 }
 
 void loop()
 {
-  if (!client.connected())
-  {
-    reconnect();
-  }
-  client.loop();
+    if (!client.connected())
+    {
+        reconnect();
+    }
+    client.loop();
 }
