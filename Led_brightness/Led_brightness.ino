@@ -60,7 +60,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 
     state = doc["state"];
 
-    analogWrite(BUILTIN_LED, state);
+    analogWrite(BUILTIN_LED, 255 - state);
 }
 
 void reconnect()
