@@ -117,6 +117,10 @@ void setup()
 
     client.setServer(mqtt_server, mqtt_port);
     client.setCallback(callback);
+
+    client.connect(id);
+    client.subscribe("led");
+
     digitalWrite(BUILTIN_LED, HIGH);
 }
 
