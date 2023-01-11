@@ -9,7 +9,7 @@ def on_connect(mqttc, obj, flags, rc):
 mqttc = mqtt.Client("Publisher")
 mqttc.on_connect = on_connect
 
-mqttc.connect("192.168.1.191", 2000)
+mqttc.connect("192.168.0.100", 2000)
 
 mqttc.loop_start()
 
