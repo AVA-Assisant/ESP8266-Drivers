@@ -6,7 +6,7 @@
 
 const char *ssid = "Karolina/Bartosz";
 const char *password = "2007/2011";
-const char *mqtt_server = "192.168.0.100";
+const char *mqtt_server = "192.168.1.144";
 const char *id = "ESP-1";
 int mqtt_port = 2000;
 int state;
