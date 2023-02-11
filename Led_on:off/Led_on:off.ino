@@ -1,6 +1,5 @@
 #include <ArduinoJson.h>
 #include <ArduinoJson.hpp>
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
@@ -81,7 +80,7 @@ void reconnect()
     if (client.connect(id))
     {
       Serial.println("connected");
-      client.subscribe("led");
+      client.subscribe(id);
 
       digitalWrite(BUILTIN_LED, LOW);
       delay(10);
@@ -126,7 +125,7 @@ void setup()
   client.setCallback(callback);
 
   client.connect(id);
-  client.subscribe("led");
+  client.subscribe(id);
 
   digitalWrite(BUILTIN_LED, HIGH);
 }

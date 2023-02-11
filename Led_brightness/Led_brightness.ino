@@ -1,15 +1,15 @@
 #include <ArduinoJson.h>
 #include <ArduinoJson.hpp>
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 const char *ssid = "Karolina/Bartosz";
 const char *password = "2007/2011";
-const char *mqtt_server = "192.168.1.144";
-const char *id = "ESP-1";
+const char *mqtt_server = "192.168.1.191";
+const char *id = "brth_001";
 int mqtt_port = 2000;
-int state;
+bool state;
+int value;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -59,8 +59,14 @@ void callback(char *topic, byte *payload, unsigned int length)
     deserializeJson(doc, strPayload); // deserialize JSON message to DynamicJsonDocument
 
     state = doc["state"];
+    value = doc["value"];
 
-    analogWrite(BUILTIN_LED, 255 - state);
+    if (state)
+    {
+        analogWrite(BUILTIN_LED, 255 - (value * 2.55));
+    }
+    else
+        analogWrite(BUILTIN_LED, 255);
 }
 
 void reconnect()
@@ -74,7 +80,7 @@ void reconnect()
         if (client.connect(id))
         {
             Serial.println("connected");
-            client.subscribe("led");
+            client.subscribe(id);
 
             digitalWrite(BUILTIN_LED, LOW);
             delay(10);
@@ -119,7 +125,7 @@ void setup()
     client.setCallback(callback);
 
     client.connect(id);
-    client.subscribe("led");
+    client.subscribe(id);
 
     digitalWrite(BUILTIN_LED, HIGH);
 }
